@@ -1,0 +1,51 @@
+<div class="container">
+    <div><br></div>
+  <div class="card mt-3">  
+   
+      <div class="row">
+        <div class="col-2">
+          <br/>
+            <div class="content"><p><strong>Select file:</strong></p></div>
+          <br/>
+        </div>
+        <div class="col-8">
+          <br/>
+          <select #fileSelector (change)="update($event)">
+            <option [ngValue]="null" disabled>Select File</option>
+            <option>All</option>
+            <option *ngFor="let file of userFileList | async" [ngValue]="file.id">{{file.name}}</option>
+          </select>
+          <br/>
+        </div>
+      </div>
+  </div>
+  <!-- <div>
+    <ejs-chart style='display:block' id='chartcontainer'  [primaryXAxis]='statistics'>
+      <e-series-collection>
+          <e-series [dataSource]='statistics' type='Bar' xName='name' yName='value'> </e-series>    
+      </e-series-collection>
+      </ejs-chart>
+  
+  </div> -->
+    <div class="card mt-3">
+      <div class="card-header">List of Statistics</div>
+      <div class="form-group">
+        <!-- <label for="search-text">Search Text</label> -->
+        <input type="text" class="form-control" id="search-text" 
+          [(ngModel)]="searchText" placeholder="Enter text to search" 
+          autofocus>
+      </div>
+      <ul
+        class="list-group list-group-flush"
+        *ngFor="let statistic of statistics  | async | appFilter : searchText "
+      >
+        <li class="list-group-item">
+          <div class="row">
+            <div class="content col-8">{{ statistic.name }}</div>
+            <div class="content col-4">{{ statistic.value }}</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  

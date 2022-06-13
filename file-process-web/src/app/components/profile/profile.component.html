@@ -1,0 +1,28 @@
+<div class="container" *ngIf="currentUser; else loggedOut">
+    <br/>
+    <div class="row">
+      <div class="col-2"></div>
+      <div class="card card-container col-8 content">
+      <header>
+        <h3 class="home-header">
+          <strong>{{ currentUser.username }}</strong> Profile
+        </h3>
+      </header>
+      <p>
+        <strong>Token:</strong>
+        {{ currentUser.accessToken.substring(0, 20) }} ...
+        {{ currentUser.accessToken.substr(currentUser.accessToken.length - 20) }}
+      </p>
+      <strong>Roles:</strong>
+      <ul>
+        <li *ngFor="let role of currentUser.roles">
+          {{ role }}
+        </li>
+      </ul>
+    </div>
+    </div>
+    </div>
+  
+    <ng-template #loggedOut>
+      Please login.
+    </ng-template>

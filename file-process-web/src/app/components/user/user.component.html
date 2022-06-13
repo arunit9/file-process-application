@@ -1,0 +1,23 @@
+<div class="container">
+    <div><br></div>
+    <div class="row">
+      <div class="col-2"></div>
+      <div class="card card-container col-8 content">
+        <div>
+          <h1 class="home-header">Welcome to the File Wizard Application</h1>
+        </div>
+        <div class="alert alert-danger" role="alert" *ngIf="!isLoggedIn">
+          <div>Please Sign Up or Login to continue</div>
+        </div>
+        <div role="alert" *ngIf="isLoggedIn">
+          <div class="alert alert-success">
+            Logged in as {{ currentUser }}.
+          </div>
+          <div>
+            <p>Navigate to <strong>Files</strong> to upload/list/delete files</p>
+            <p>Navigate to <strong>Statistics</strong> to view statistics</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
