@@ -1,0 +1,34 @@
+version: '3'
+services:
+  app-mysql:
+    container_name: app-mysql
+    image: mysql/mysql-server:5.7
+    environment:
+      MYSQL_DATABASE: fileupload
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_HOST: '%'
+    ports:
+    - "3306:3306"
+
+  file-process-api:
+    container_name: file-process-api
+    image: arunit9/file-process-api
+    restart: on-failure
+    ports:
+    - "8080:8080"
+    depends_on:
+    - app-mysql
+    environment:
+      - DATABASE_HOST=app-mysql
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=password
+      - DATABASE_NAME=fileupload
+      - DATABASE_PORT=3306
+
+  file-process-web:
+    container_name: file-process-web
+    image: arunit9/file-process-web
+    ports:
+    - "8081:80"
+    depends_on:
+    - file-process-api
