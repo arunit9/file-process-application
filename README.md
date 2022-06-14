@@ -77,16 +77,17 @@ Filenames will be considered unique by itself (irrespective of the user who uplo
 - Unprocessed files (waiting in the queue) would be replaced in the queue by the files with the  same name being uploaded. (But put at the end of the queue.)
 
 ### File processing
-Only files having .opi extension would be accepted by the REST methods. The content should be in xml format. A .opi file not having XML data would still be accepted by the REST. However, it will fail during file processing later and will be indicated to the user with a "Error_" prefix attached to the filename. No statisctics will be available for such files.
+Only files having .opi extension would be accepted by the REST methods. The content should be in xml format. A .opi file not having XML data would still be accepted by the REST. However, it will fail during file processing later and will be indicated to the user with a "Error_" prefix attached to the filename. No statistics will be available for such files.
 
 - Valid users can upload a BOY format file
 
 The xml will be parsed and a count of ocurrences of each unique element - subelements - parameter combination will be calculated based on XML nodes and their child nodes until a node with no childdren is reached. It is assumed that the "parameter" mentioned in the assignment is the name of the node with no child nodes (not the value of that node). This was assumed considering the purpose of a .opi file is to configure components in a Control System.
 
-- The application should parse the input BOY format file, count the occurrences of all the elements and  their parameters, and store the statistics in a DB.
+- The application should parse the input BOY format file, count the occurrences of all the elements and their parameters, and store the statistics in a DB.
 - The statistics should be presented in dot-separated  format (e(0).e(1).e(2)....e(n)) where the e(x) represents the element name, the e(x+1) is the sub-element  of e(x) and e(n) is the parameter name. 
 
 **Example 01:**
+```xml
 <display typeId="org.csstudio.opibuilder.Display" version="1.0.0">
     <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
         <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -95,16 +96,18 @@ The xml will be parsed and a count of ocurrences of each unique element - subele
         <show_units>true</show_units>
     </widget>
 </display>
+```
 
 **Statistics**
-display = 1
-display.widget = 1
-display.widget.border_alarm_sensitive = 1
-display.widget.visible = 1
-display.widget.vertical_alignment = 1
-display.widget.show_units = 1
+- display = 1
+- display.widget = 1
+- display.widget.border_alarm_sensitive = 1
+- display.widget.visible = 1
+- display.widget.vertical_alignment = 1
+- display.widget.show_units = 1
 
 **Example 02:**
+```xml
 <items>
 	<item id="0001" type="donut">
 		<name>Cake</name>
@@ -137,15 +140,16 @@ display.widget.show_units = 1
         <topping id="5004">Maple</topping>
     </item>
 </items>
+```
 
 **Statistics**
-items = 1
-items.item = 2
-items.item.ppu = 2
-items.item.name = 2
-items.item.topping = 12
-items.item.batters = 2
-items.item.batters.batter = 6
+- items = 1
+- items.item = 2
+- items.item.ppu = 2
+- items.item.name = 2
+- items.item.topping = 12
+- items.item.batters = 2
+- items.item.batters.batter = 6
 
 ### User Interface
 Angular was used for the user interface rather than server rendered HTML content such as JSP, Thymleaf. Angular provides a better user experience and code maintainability and has extensive support for REST services and handing access tokens. Angular was selected over JavaFX since it is by definition a technology for web applications where as JavaFX is a client application platform for desktop, mobile and embedded systems although it can be deployed to run inside a web browser. This was based on the following points of the assignment,
