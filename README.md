@@ -109,21 +109,21 @@ The xml will be parsed and a count of ocurrences of each unique element - subele
 **Example 02:**
 ```xml
 <items>
-	<item id="0001" type="donut">
-		<name>Cake</name>
-		<ppu>0.55</ppu>
-		<batters>
-			<batter id="1001">Regular</batter>
-			<batter id="1002">Chocolate</batter>
-			<batter id="1003">Blueberry</batter>
-		</batters>
-		<topping id="5001">None</topping>
-		<topping id="5002">Glazed</topping>
-		<topping id="5005">Sugar</topping>
-		<topping id="5006">Sprinkles</topping>
-		<topping id="5003">Chocolate</topping>
-		<topping id="5004">Maple</topping>
-	</item>
+    <item id="0001" type="donut">
+        <name>Cake</name>
+        <ppu>0.55</ppu>
+        <batters>
+            <batter id="1001">Regular</batter>
+            <batter id="1002">Chocolate</batter>
+            <batter id="1003">Blueberry</batter>
+        </batters>
+        <topping id="5001">None</topping>
+        <topping id="5002">Glazed</topping>
+        <topping id="5005">Sugar</topping>
+        <topping id="5006">Sprinkles</topping>
+        <topping id="5003">Chocolate</topping>
+        <topping id="5004">Maple</topping>
+    </item>
     <item id="0001" type="donut">
         <name>Cake</name>
         <ppu>0.55</ppu>
