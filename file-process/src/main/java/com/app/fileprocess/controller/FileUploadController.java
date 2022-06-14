@@ -75,7 +75,6 @@ public class FileUploadController {
 	@PostMapping("/upload/multi/{username}")
 	public ResponseEntity<MessageResponse> handleMultipleFileUpload(@PathVariable @Min(6) @Max(32) String username,
 			@RequestParam("files") MultipartFile[] files) {
-//			RedirectAttributes redirectAttributes) {
 		if (!fileProcessorService.checkUserExists(username)) {
 			return ResponseEntity
 					.badRequest()

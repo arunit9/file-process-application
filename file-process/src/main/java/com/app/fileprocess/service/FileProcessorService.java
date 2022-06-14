@@ -19,6 +19,15 @@ import com.app.fileprocess.dao.repository.UserJpaRepository;
 import com.app.fileprocess.queue.FileMetadata;
 import com.app.fileprocess.queue.FileQueue;
 
+/**
+ * FileProcessorService
+ * 
+ * <P>Logic for adding/listing/deleting files and statistics via REST methods
+ * 
+ * @author arunitillekeratne
+ * @version 1.0
+ *
+ */
 @Component
 public class FileProcessorService {
 
@@ -34,19 +43,43 @@ public class FileProcessorService {
     @PersistenceContext
     private EntityManager em;
 
+    /**
+     * Returns true if user exists on the database
+     * 
+     * @param username
+     * @return
+     */
     public boolean checkUserExists(String username) {
     	return userJpaRepository.existsByUsername(username);
     }
 
+    /**
+     * Returns true if reference to a file exists on the database
+     * 
+     * @param filename
+     * @return
+     */
     public boolean checkUserFileExists(String filename) {
     	return userFileJpaRepository.existsByFilename(filename);
     }
 
+    /**
+     * Lists all files uploaded by a user
+     * 
+     * @param username
+     * @return
+     */
     public Set<UserFile> listFilesByUser(String username) {
     	User user = userJpaRepository.findByUsername(username);
     	return user.getUserFiles();
     }
 
+    /**
+     * Delete file and associated statistics from the database
+     * 
+     * @param username
+     * @param filename
+     */
     @Transactional
     public void deleteFileByFilename(String username, String filename) {
     	UserFile userFile = userFileJpaRepository.findByFilename(filename);
@@ -58,16 +91,25 @@ public class FileProcessorService {
     	}
     }
 
-    @Transactional
-    public void deleteFile(Long id) {
-    	userFileJpaRepository.deleteById(id);
-    }
-
+    /**
+     * Add new files to be uploaded to the queue to be processed asynchronously
+     * by a separate thread later
+     * 
+     * @param filename
+     * @param username
+     * @return
+     */
     public boolean addToQueue(String filename, String username) {
     	FileMetadata fileMetadata = new FileMetadata(filename, username);
     	return fileQueue.add(fileMetadata);
     }
 
+    /**
+     * Get statistics for a user
+     * 
+     * @param username
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public Set<Statistic> getStatistics(String username) {
     	Set<Statistic> statistics = new HashSet<Statistic>();
@@ -80,6 +122,12 @@ public class FileProcessorService {
     	return statistics;
     }
 
+    /**
+     * Get statistics by file id
+     * 
+     * @param id
+     * @return
+     */
     public Set<Statistic> getStatistics(Long id) {
 
     	UserFile userFile = userFileJpaRepository.findById(id).orElse(null);
@@ -87,6 +135,12 @@ public class FileProcessorService {
     	return userFile.getStatistics();
     }
  
+    /**
+     * Get statistics by filename
+     * 
+     * @param filename
+     * @return
+     */
     public Set<Statistic> getStatisticsByFilename(String filename) {
 
     	UserFile userFile = userFileJpaRepository.findByFilename(filename);

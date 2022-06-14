@@ -11,6 +11,18 @@ import com.app.fileprocess.queue.FileMetadata;
 import com.app.fileprocess.queue.FileQueue;
 import com.app.fileprocess.storage.StorageService;
 
+/**
+ * Class for continuously polling for files to be processed
+ * 
+ * <P> Started by Spring Boot
+ * 
+ * <P>Handles polling an internal queue for files to be processed and
+ * passing the data for processing to a separate thread
+ * 
+ * @author arunitillekeratne
+ * @version 1.0
+ *
+ */
 @Component
 public class AsyncFileProcessor implements CommandLineRunner {
 

@@ -26,8 +26,8 @@ public class FileProcessApplication extends SpringBootServletInitializer {
 	@Bean
 	public Executor taskExecutor() {
 	    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-	    executor.setCorePoolSize(3);
-	    executor.setMaxPoolSize(3);
+	    executor.setCorePoolSize(2);
+	    executor.setMaxPoolSize(2);
 	    executor.setQueueCapacity(500);
 	    executor.setThreadNamePrefix("FileProcessorThread-");
 	    executor.initialize();

@@ -24,7 +24,15 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
+/**
+ * FileStorageServiceImplementor
+ * 
+ * <P>Storage Service implementation for files
+ * 
+ * @author arunitillekeratne
+ * @version 1.0
+ *
+ */
 @Service
 public class FileStorageServiceImplementor implements StorageService{
 
@@ -108,12 +116,12 @@ public class FileStorageServiceImplementor implements StorageService{
 			}
 			else {
 				throw new StorageFileNotFoundException(
-						"Could not read file: " + filename);
+						"Error reading file: " + filename);
 
 			}
 		}
 		catch (MalformedURLException e) {
-			throw new StorageFileNotFoundException("Could not read file: " + filename, e);
+			throw new StorageFileNotFoundException("Error reading file: " + filename, e);
 		}
 	}
 
@@ -137,7 +145,7 @@ public class FileStorageServiceImplementor implements StorageService{
 			Files.createDirectories(rootLocation);
 		}
 		catch (IOException e) {
-			throw new StorageException("Could not initialize storage", e);
+			throw new StorageException("Storage initializing failure", e);
 		}
 	}
 }

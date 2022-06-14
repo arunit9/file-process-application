@@ -9,6 +9,15 @@ import org.springframework.validation.Validator;
 import com.app.fileprocess.dao.entity.User;
 import com.app.fileprocess.security.service.UserService;
 
+/**
+ * UserValidator
+ * 
+ * <P>Holds validation for users
+ * 
+ * @author arunitillekeratne
+ * @version 1.0
+ *
+ */
 @Component
 public class UserValidator implements Validator {
 	@Autowired
@@ -19,6 +28,9 @@ public class UserValidator implements Validator {
         return User.class.equals(aClass);
     }
 
+    /**
+     * Validates username and password
+     */
     @Override
     public void validate(Object o, Errors errors) {
         User user = (User) o;

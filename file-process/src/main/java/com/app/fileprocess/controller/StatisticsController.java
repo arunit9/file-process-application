@@ -36,6 +36,7 @@ public class StatisticsController {
 		List<StatisticResponse> statisticResponses = new ArrayList<StatisticResponse>();
 		Set<Statistic> statistics = null;
 		if (fileProcessorService.checkUserExists(username)) {
+			// filename is an optional field used only when getting statistics for a file
 			if (filename.isPresent()) {
 				if (fileProcessorService.checkUserFileExists(filename.get()))
 				statistics = fileProcessorService.getStatisticsByFilename(filename.get());

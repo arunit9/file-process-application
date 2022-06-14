@@ -1,5 +1,17 @@
 package com.app.fileprocess.queue;
 
+/**
+ * Object for file metadata
+ * 
+ * <P>Object that holds the metadata of a file to be put on the queue
+ * 
+ * <P>Since since two files with same filename is considered the same, the equals
+ * and hashcode methods have been overriden
+ * 
+ * @author arunitillekeratne
+ * @version 1.0
+ *
+ */
 public class FileMetadata {
 
 	private String filename;

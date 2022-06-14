@@ -24,6 +24,15 @@ import com.app.fileprocess.dao.repository.UserJpaRepository;
 import com.app.fileprocess.queue.FileMetadata;
 import com.app.fileprocess.storage.StorageService;
 
+/**
+ * AsyncFileProcessorService
+ * 
+ * <P>Process files asynchronously by parsing the xml and calculating the statistics
+ * 
+ * @author arunitillekeratne
+ * @version 1.0
+ *
+ */
 @Service
 public class AsyncFileProcessorService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AsyncFileProcessorService.class);
@@ -37,6 +46,14 @@ public class AsyncFileProcessorService {
     @Autowired
     private StorageService fileStorageServiceImplementor;
 
+    /**
+     * The main method responsible for asynchronous processing of files
+     * that are polled from a queue
+     * 
+     * @param fileMetadata
+     * @return
+     * @throws Exception
+     */
     @Async
     @Transactional
     public CompletableFuture<Set<Statistic>> saveUserFiles(FileMetadata fileMetadata) throws Exception {
@@ -44,7 +61,7 @@ public class AsyncFileProcessorService {
 
         User user = userJpaRepository.findByUsername(fileMetadata.getUsername());
 
-        // Remove existing file and statistics of the the same file name
+        // Remove existing file and statistics of the same file name
         UserFile existingUserFile = userFileJpaRepository.findByFilename(fileMetadata.getFilename());
     	
         if (existingUserFile != null) {
@@ -70,6 +87,16 @@ public class AsyncFileProcessorService {
         return CompletableFuture.completedFuture(statistics);
     }
 
+    /**
+     * Get the file on the physical directory using the file metadata
+     * and calls method to extract statistics
+     * 
+     * if the xml cannot be parsed, a prefix of Error_ added to filename
+     * 
+     * @param userFile
+     * @param user
+     * @return
+     */
     public Set<Statistic> getStatistics(UserFile userFile, User user) {
     	Set<Statistic> statistics = null;
  
@@ -86,7 +113,7 @@ public class AsyncFileProcessorService {
 
     private Set<Statistic> parseXML(UserFile userFile, User user, Document doc) {
 
-		NodeList list = doc.getDocumentElement().getChildNodes();//doc.getElementsByTagName("");
+		NodeList list = doc.getDocumentElement().getChildNodes();
         Map<String, Long> stats = new HashMap<String, Long>();
         String str = doc.getDocumentElement().getNodeName();
         stats.put(str, 1L);
@@ -106,6 +133,9 @@ public class AsyncFileProcessorService {
 		return statistics; 
     }
 
+    /*
+     * Recursively navigate the xml document to extract statistics of the node elements
+     */
     private static void visitChildNodes(NodeList nList, Map<String, Long> stats, String str) {
     	for (int temp = 0; temp < nList.getLength(); temp++) {
           Node node = nList.item(temp);

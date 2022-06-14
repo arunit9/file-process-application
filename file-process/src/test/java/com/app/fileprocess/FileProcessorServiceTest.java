@@ -6,9 +6,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -31,6 +31,16 @@ import com.app.fileprocess.queue.FileMetadata;
 import com.app.fileprocess.queue.FileQueue;
 import com.app.fileprocess.service.FileProcessorService;
 
+/**
+ * Test class for FileProcessorService
+ * 
+ * <P>Tests listing files and statistics, deleting files and associated statistics
+ * and adding elements to the queue for asynchronous processing
+ * 
+ * @author arunitillekeratne
+ * @version 2.0
+ *
+ */
 public class FileProcessorServiceTest {
 	@Mock
     private StatisticJpaRepository statisticJpaRepository;
@@ -48,85 +58,126 @@ public class FileProcessorServiceTest {
 	@PersistenceContext
     private EntityManager em;
 
-	@InjectMocks // auto inject helloRepository
+	@InjectMocks
     private FileProcessorService fileProcessorService;
 
 	@BeforeEach
     void setMockOutput() {
     	MockitoAnnotations.initMocks(this);
-//    	List<String> statistics = new ArrayList<String>();
-//    	statistics.add("element1.subelement=1");
-//    	statistics.add("element2.subelement=1");
+
     	User user = new User();
     	user.setId(1L);
     	user.setUsername("arunit");
     	user.setPassword("password");
 
-    	UserFile userFile = new UserFile();
-    	userFile.setFilename("notes.opi");
-    	userFile.setId(1L);
+    	UserFile userFile1 = new UserFile();
+    	userFile1.setUser(user);
+    	userFile1.setFilename("notes1.opi");
+    	userFile1.setId(1L);
+
+    	UserFile userFile2 = new UserFile();
+    	userFile2.setUser(user);
+    	userFile2.setFilename("notes2.opi");
+    	userFile2.setId(2L);
+
     	Set<UserFile> userFiles = new HashSet<>();
-    	userFiles.add(userFile);
+    	userFiles.add(userFile1);
+    	userFiles.add(userFile2);
     	user.setUserFiles(userFiles);
 
     	Set<Statistic> stats = new HashSet<Statistic>();
     	Statistic stat1 = new Statistic();
     	stat1.setId(1L);
-    	stat1.setUserFile(userFile);
+    	stat1.setUserFile(userFile1);
     	stat1.setName("heading.body");
     	stat1.setValue(3L);
     	stats.add(stat1);
 
     	Statistic stat2 = new Statistic();
-    	stat2.setId(1L);
-    	stat2.setUserFile(userFile);
+    	stat2.setId(2L);
+    	stat2.setUserFile(userFile1);
     	stat2.setName("heading.body.name");
     	stat2.setValue(6L);
     	stats.add(stat2);
-//    	user.setStatistics(stats);
-
-    	List<Statistic> statistics = new ArrayList<Statistic>();
-    	statistics.add(stat1);
-    	statistics.add(stat2);
-
-    	List<Object[]> groupedElements =  new ArrayList<Object[]>();
-    	Object[] objectArray1 = { "heading.body", 3 };
-    	Object[] objectArray2 = { "heading.body.name", 6 };
-    	groupedElements.add(objectArray1);
-    	groupedElements.add(objectArray2);
+    	user.setStatistics(stats);
+    	userFile1.setStatistics(stats);
 
     	Mockito.when(userJpaRepository.findByUsername(any(String.class))).thenReturn(user);
-    	Mockito.when(userFileJpaRepository.findByFilename(any(String.class))).thenReturn(userFile);
-//    	Mockito.when(userFileJpaRepository.deleteByFilename(any(String.class)))
-//    	Mockito.when(statisticJpaRepository.findByFilename(any(String.class))).thenReturn(statistics);
- //   	Mockito.when(em.createQuery(any(String.class)).getResultList()).thenReturn(groupedElements);
-    	
-//        when(helloRepository.get()).thenReturn("Hello Mockito From Repository");
-    }
+    	Mockito.when(userFileJpaRepository.findByFilename("notes1.opi")).thenReturn(userFile1);
+ 	
+	}
+
+	/**
+	 * Tests the files are retrieved by the username of the user that uploaded them
+	 * @throws Exception
+	 */
 	@Test
     public void listFilesByUser_Test()
       throws Exception {
-		Set<UserFile> filenames = fileProcessorService.listFilesByUser("arunit");
-//FIXME
-		//		assertEquals("notes.opi", filenames.);
-       //given(fileProcessorService.getAllElementsByFilename(any(String.class)).thenReturn(statistics);
-    }
+		Set<UserFile> files = fileProcessorService.listFilesByUser("arunit");
+		Map<Long, String> expectedFiles = new HashMap<Long, String>();
+		expectedFiles.put(1L, "notes1.opi");
+		expectedFiles.put(2L, "notes2.opi");
 
+		files.forEach( (file) -> { 
+			assertEquals(expectedFiles.get(file.getId()), file.getFilename());
+			assertEquals("arunit", file.getUser().getUsername());
+		});
+	}
+
+	/**
+	 * Tests that statistics linked to a file are returned
+	 */
 	@Test
 	public void getAllElementsByFilename_Test() {
-		// FIXME
-//		List<String> stats = fileProcessorService.getStatistics("notes1.opi", "arunit");
-//		assertEquals("heading.body = 3", stats.get(0));
-//		assertEquals("heading.body.name = 6", stats.get(1));
+		Set<Statistic> statistics = fileProcessorService.getStatisticsByFilename("notes1.opi");
+
+		Statistic stat1 = new Statistic();
+    	stat1.setId(1L);
+    	stat1.setName("heading.body");
+    	stat1.setValue(3L);
+
+    	Statistic stat2 = new Statistic();
+    	stat2.setId(2L);
+    	stat2.setName("heading.body.name");
+    	stat2.setValue(6L);
+
+		Map<Long, Statistic> expectedFiles = new HashMap<Long, Statistic>();
+		expectedFiles.put(1L, stat1);
+		expectedFiles.put(2L, stat2);
+
+		statistics.forEach( (statistic) -> { 
+			assertEquals(expectedFiles.get(statistic.getId()).getName(), statistic.getName());
+			assertEquals(expectedFiles.get(statistic.getId()).getValue(), statistic.getValue());
+		});
+
 	}
 
+	/**
+	 * Tests file deletion
+	 */
 	@Test
 	public void deleteFile_Test() {
-//		fileProcessorService.deleteFileByFilename("notes1.opi");
-//		assertTrue(true);
-//		verify(userFileJpaRepository,times(1)).deleteByFilename("notes1.opi");
+		fileProcessorService.deleteFileByFilename("arunit","notes1.opi");
+		
+		verify(userJpaRepository,times(1)).findByUsername("arunit");
+		verify(userJpaRepository,times(1)).save(any(User.class));
+
 	}
 
+	/**
+	 * Tests file deletion logic when file does not exist
+	 */
+	@Test
+	public void deleteFile_FileNotExists_Test() {
+		fileProcessorService.deleteFileByFilename("arunit","notes2.opi");
+		User user = verify(userJpaRepository,times(0)).findByUsername("arunit");
+		verify(userJpaRepository,times(0)).save(user);
+	}
+
+	/**
+	 * Tests adding metadata of files to be processed to an internal queue
+	 */
 	@Test
 	public void addToQueue_Test() {
 		String filename = "notes1.opi";
@@ -136,12 +187,5 @@ public class FileProcessorServiceTest {
 		assertTrue(true);
 		verify(fileQueue,times(1)).add(fileMetadata);
 	}
-
-//	@Test
-//	public void getAllElementsByUser_Test() {
-//		List<String> stats = fileProcessorService.getAllElementsByUser("arunit");
-//		assertEquals("heading.body = 3", stats.get(0));
-//		assertEquals("heading.body.name = 6", stats.get(1));
-//	}
 
 }

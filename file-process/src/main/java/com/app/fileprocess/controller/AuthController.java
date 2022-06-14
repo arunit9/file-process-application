@@ -30,6 +30,7 @@ import com.app.fileprocess.response.JwtResponse;
 import com.app.fileprocess.response.MessageResponse;
 import com.app.fileprocess.security.jwt.JwtUtils;
 import com.app.fileprocess.security.service.UserDetailsImpl;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
@@ -44,6 +45,7 @@ public class AuthController {
 	PasswordEncoder encoder;
 	@Autowired
 	JwtUtils jwtUtils;
+
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 		Authentication authentication = null;
@@ -66,6 +68,7 @@ public class AuthController {
 												 userDetails.getUsername(),
 												 roles));
 	}
+
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
@@ -73,14 +76,9 @@ public class AuthController {
 					.badRequest()
 					.body(new MessageResponse("Error: Username is already taken!"));
 		}
-//		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-//			return ResponseEntity
-//					.badRequest()
-//					.body(new MessageResponse("Error: Email is already in use!"));
-//		}
+
 		// Create new user's account
 		User user = new User(signUpRequest.getUsername(), 
-	//						 signUpRequest.getEmail(),
 							 encoder.encode(signUpRequest.getPassword()));
 		Set<String> strRoles = signUpRequest.getRole();
 		Set<Role> roles = new HashSet<>();
