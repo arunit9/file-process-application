@@ -39,7 +39,7 @@ Once done, please verify maven, java, docker and docker-compose versions to see 
 
 The project can be cloned or downloaded from https://github.com/arunit9/file-process-application.git
 
-Open a terminal inside the parent directory. The project_build.sh is located here. This file will build docker images and run docker containers for the file-process (SpringBoot REST API), MySQL database and the file-process-web (Angular).
+Open a terminal inside the file-process-application directory. The project_build.sh is located here. This file will build docker images and run docker containers for the file-process (SpringBoot REST API), MySQL database and the file-process-web (Angular).
 
 **NOTE: This script contains docker commands, hence you may have to sudo su**
 
