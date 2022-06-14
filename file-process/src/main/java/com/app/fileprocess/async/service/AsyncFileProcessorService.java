@@ -44,7 +44,7 @@ public class AsyncFileProcessorService {
     private UserFileJpaRepository userFileJpaRepository;
  
     @Autowired
-    private StorageService fileStorageServiceImplementor;
+    private StorageService fileStorageService;
 
     /**
      * The main method responsible for asynchronous processing of files
@@ -68,6 +68,14 @@ public class AsyncFileProcessorService {
 	    	user.getUserFiles().remove(existingUserFile);
 	    	user.getStatistics().removeAll(existingUserFile.getStatistics());
 	    	userJpaRepository.save(user);
+    	} else {
+	        // Look for any Error_ version of the same filename and remove file (no statistics to remove)
+	        UserFile existingErroredUserFile = userFileJpaRepository.findByFilename("Error_" + fileMetadata.getFilename());
+	    	
+	        if (existingErroredUserFile != null) {
+		    	user.getUserFiles().remove(existingErroredUserFile);
+		    	userJpaRepository.save(user);
+	    	}
     	}
 
         UserFile userFile = new UserFile();
@@ -100,7 +108,7 @@ public class AsyncFileProcessorService {
     public Set<Statistic> getStatistics(UserFile userFile, User user) {
     	Set<Statistic> statistics = null;
  
-    	Document doc = (Document)fileStorageServiceImplementor.convertToObject(userFile.getFilename());
+    	Document doc = (Document)fileStorageService.convertToObject(userFile.getFilename());
 
     	if (doc == null) {
     		// Error occurred in parsing XML. Append Error_ in front of the file name

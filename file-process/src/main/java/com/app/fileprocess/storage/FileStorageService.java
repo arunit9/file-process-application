@@ -34,14 +34,14 @@ import org.xml.sax.SAXException;
  *
  */
 @Service
-public class FileStorageServiceImplementor implements StorageService{
+public class FileStorageService implements StorageService{
 
 	private final Path rootLocation;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(FileStorageServiceImplementor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FileStorageService.class);
 
 	@Autowired
-	public FileStorageServiceImplementor(StorageProperties properties) {
+	public FileStorageService(StorageProperties properties) {
 		this.rootLocation = Paths.get(properties.getLocation());
 	}
 

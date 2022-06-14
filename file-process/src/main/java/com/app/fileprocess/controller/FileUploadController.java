@@ -5,13 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import javax.validation.ConstraintViolationException;
+import javax.validation.constraints.Size;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,10 +31,12 @@ import com.app.fileprocess.service.FileProcessorService;
 import com.app.fileprocess.storage.StorageFileNotFoundException;
 import com.app.fileprocess.storage.StorageService;
 import com.app.fileprocess.validator.UserFileValidator;
+import com.app.fileprocess.validator.ValidationConstants;
 
 @Controller
 @RequestMapping("/api/files")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@Validated
 public class FileUploadController {
 	private final StorageService storageService;
 
@@ -49,7 +52,8 @@ public class FileUploadController {
 	}
 
 	@GetMapping("/{username}")
-	public ResponseEntity<List<UserFileResponse>> listUploadedFiles(@PathVariable @Min(6) @Max(32) String username) throws IOException {
+	public ResponseEntity<List<UserFileResponse>> listUploadedFiles(@Size(min=3, max=20, message = ValidationConstants.USERNAME_INVALID)
+		@PathVariable String username) throws IOException {
 		List<UserFileResponse> userFileResponses = new ArrayList<UserFileResponse>();
 
 		if (!fileProcessorService.checkUserExists(username)) {
@@ -67,13 +71,15 @@ public class FileUploadController {
 
 	@DeleteMapping("/{username}/{filename}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteFile(@PathVariable @Min(6) @Max(32) String username, @PathVariable @Min(5) String filename) {
+	public void deleteFile(@Size(min=3, max=20, message = ValidationConstants.USERNAME_INVALID)
+			@PathVariable String username, @PathVariable String filename) {
 		storageService.deleteFile(filename.replaceFirst("Error_", ""));
 		fileProcessorService.deleteFileByFilename(username, filename);
 	}
 
 	@PostMapping("/upload/multi/{username}")
-	public ResponseEntity<MessageResponse> handleMultipleFileUpload(@PathVariable @Min(6) @Max(32) String username,
+	public ResponseEntity<MessageResponse> handleMultipleFileUpload(@Size(min=3, max=20, message = ValidationConstants.USERNAME_INVALID)
+		@PathVariable String username,
 			@RequestParam("files") MultipartFile[] files) {
 		if (!fileProcessorService.checkUserExists(username)) {
 			return ResponseEntity
@@ -101,7 +107,8 @@ public class FileUploadController {
 	}
 
 	@PostMapping("/upload/{username}")
-	public ResponseEntity<MessageResponse> handleFileUpload(@PathVariable @Min(6) @Max(32) String username,
+	public ResponseEntity<MessageResponse> handleFileUpload(@Size(min=3, max=20, message = ValidationConstants.USERNAME_INVALID)
+		@PathVariable String username,
 			@RequestParam("files") MultipartFile file) {
 		if (!fileProcessorService.checkUserExists(username)) {
 			return ResponseEntity
@@ -129,5 +136,10 @@ public class FileUploadController {
 		return ResponseEntity.notFound().build();
 	}
 
+	@ExceptionHandler(ConstraintViolationException.class)
+	ResponseEntity<?> handleConstrainViolationException(ConstraintViolationException e) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(new MessageResponse("Validation error: " + e.getMessage()));
+	}
 
 }
