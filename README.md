@@ -20,6 +20,7 @@ The following are required:
 - Maven
 - Docker
 - docker-compose
+- port 8080, 8081 and 3306 must be free
 
 If you do not have the above installed, please run below supplementary scripts in the given order. Executable permission need to be given prior to execution.
 - sudo su
@@ -59,6 +60,12 @@ The above process can be run, re-run as many times as you like to build and run 
 
 - chmod +x project_run.sh
 - ./project_run.sh
+
+### Stop
+The project_stop.sh can be executed to stop the application (and the docker stack).
+
+- chmod +x project_stop.sh
+- ./project_stop.sh
 
 **NOTE: The file process Spring Boot application is set to delete the content of the file upload directory and drop and recreate the database tables at start.**
 
