@@ -55,7 +55,9 @@ The application can be accessed via a web browser at localhost:8081
 
 ### Run
 
-The above process can be run, re-run as many times as you like to build and run the application. The project_run.sh is provided as a quicker option to simply just run the application. It will simply start the docker stack using docker images in your local docker or Docker Hub.
+The above process can be run, re-run as many times as you like to build and run the application. The project_run.sh is provided as a quicker option to simply just run the application. It will simply start the docker stack using docker images in your local docker (file-process-api and file-process-web) or Docker Hub (app-mysql). Please ensure that you have run the project_build.sh atleast once before running this script.
+
+**NOTE: I have not pushed my docker images to the Docker Hub**
 
 
 - chmod +x project_run.sh
