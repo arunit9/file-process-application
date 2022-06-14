@@ -7,7 +7,7 @@ The File Process Application Consists of 3 components
 - file-process-web: Angular front-end web application
 - MySQL database
 
-Once the build/run scripts are executed, a docker stack will be running with 3 containers corresponding to above components
+Once the build/run scripts are executed, a docker stack will be running with 3 containers corresponding to the above components
 
 ## Building and Running the Application
 
@@ -22,13 +22,13 @@ The following are required:
 - docker-compose
 
 If you do not have the above installed, please run below supplementary scripts in the given order. Executable permission need to be given prior to execution.
-sudo su
-chmod +x setup.sh
-chmod +x docker_setup.sh
-chmod +x docker_compose_setup.sh
-./setup.sh
-./docker_setup.sh
-./docker_compose_setup.sh
+- sudo su
+- chmod +x setup.sh
+- chmod +x docker_setup.sh
+- chmod +x docker_compose_setup.sh
+- ./setup.sh
+- ./docker_setup.sh
+- ./docker_compose_setup.sh
 
 Please note that the command line will prompt a few questions while running for which you need to type “y” (yes).
 
@@ -40,10 +40,10 @@ The project can be cloned or downloaded from https://github.com/arunit9/file-pro
 
 Open a terminal inside the parent directory. The project_build.sh is located here. This file will build docker images and run docker containers for the file-process (SpringBoot REST API), MySQL database and the file-process-web (Angular).
 
-** NOTE: These scripts contains docker commands, hence you may have to sudo su **
+**NOTE: This script contains docker commands, hence you may have to sudo su**
 
-chmod +x project_build.sh
-./project_build.sh
+- chmod +x project_build.sh
+- ./project_build.sh
 
 Once the execution has completed, you should see 3 docker containers as below.
 - file-process-web at port 8081
@@ -57,13 +57,13 @@ The application can be accessed via a web browser at localhost:8081
 The above process can be run, re-run as many times as you like to build and run the application. The project_run.sh is provided as a quicker option to simply just run the application. It will simply start the docker stack using docker images in your local docker or Docker Hub.
 
 
-chmod +x project_run.sh
-./project_run.sh
+- chmod +x project_run.sh
+- ./project_run.sh
 
-** NOTE: The file process Spring Boot application is set to delete the content of the file upload directory and drop and recreate the database tables at start.
+**NOTE: The file process Spring Boot application is set to delete the content of the file upload directory and drop and recreate the database tables at start.**
 
 ## Design
-Following decisions were made to the best of my best considering the requirements of the assignment.
+Following decisions were made to the best of my best knowledge considering the requirements of the assignment.
 
 ### Queue
 A java based queue was implemented within the file-process Spring Boot application rather than using an out of the box message broker queue such as ActiveMQ. The REST methods will add filenames to the queue and a seperate thread will poll the queue and process the files asynchronously. This was based on the below points of the assignment,
@@ -86,7 +86,7 @@ The xml will be parsed and a count of ocurrences of each unique element - subele
 - The application should parse the input BOY format file, count the occurrences of all the elements and  their parameters, and store the statistics in a DB.
 - The statistics should be presented in dot-separated  format (e(0).e(1).e(2)....e(n)) where the e(x) represents the element name, the e(x+1) is the sub-element  of e(x) and e(n) is the parameter name. 
 
-** Example 01: **
+**Example 01:**
 <display typeId="org.csstudio.opibuilder.Display" version="1.0.0">
     <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
         <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -96,7 +96,7 @@ The xml will be parsed and a count of ocurrences of each unique element - subele
     </widget>
 </display>
 
-** Statistics **
+**Statistics**
 display = 1
 display.widget = 1
 display.widget.border_alarm_sensitive = 1
@@ -104,7 +104,7 @@ display.widget.visible = 1
 display.widget.vertical_alignment = 1
 display.widget.show_units = 1
 
-** Example 02: **
+**Example 02:**
 <items>
 	<item id="0001" type="donut">
 		<name>Cake</name>
@@ -138,7 +138,7 @@ display.widget.show_units = 1
     </item>
 </items>
 
-** Statistics **
+**Statistics**
 items = 1
 items.item = 2
 items.item.ppu = 2
